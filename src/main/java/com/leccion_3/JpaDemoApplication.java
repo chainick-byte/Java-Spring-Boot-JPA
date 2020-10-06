@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 @SpringBootApplication
 public class JpaDemoApplication implements CommandLineRunner {
@@ -22,57 +25,99 @@ public class JpaDemoApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        existePorId();
+        buscarTodoConPaginacionOrdenado();
         System.out.println(repositorioCategoria);
     }
-    private void existePorId(){
-       boolean existe= repositorioCategoria.existsById(10);
-        System.out.println("La categoria "+ existe);
+//    private void guardarTodo(){
+//        
+//        repositorioCategoria.saveAll(itrbl)
+//    }
+
+    private void borrarUnBloqueDeDatos() {
+        //6-10-2020 mucha precaucion
+        repositorioCategoria.deleteAllInBatch();
     }
-    private void encuentraTodo(){
-         Iterable<Categoria>categorias=repositorioCategoria.findAll();
-         for(Categoria cat:categorias){
-             System.out.println(cat);
-         }
+
+    private void buscarTodoConPaginacionOrdenado() {
+        Page<Categoria> paginaDeDatos = repositorioCategoria.findAll(PageRequest.of(1, 5, Sort.by("nombre")));
+        for (Categoria c : paginaDeDatos.getContent()) {
+            System.out.println(c.getId() + "|| " + c.getNombre() + "||");
+
+        }
     }
-    private void encontrarPorId(){
-        List <Integer> ids=new LinkedList<Integer>();
+
+    private void buscarTodoConPaginacion() {
+        Page<Categoria> paginaDeDatos = repositorioCategoria.findAll(PageRequest.of(1, 5));
+        System.out.println("Total registros: " + paginaDeDatos.getTotalElements() + ". Total de paginas "
+                + +paginaDeDatos.getTotalPages());
+        for (Categoria c : paginaDeDatos.getContent()) {
+            System.out.println(c.getId() + "|| " + c.getNombre() + "||");
+        }
+    }
+
+    private void buscarOrdenado() {
+        Iterable<Categoria> categorias = repositorioCategoria.findAll(Sort.by("nombre"));
+        for (Categoria c : categorias) {
+            System.out.println(c.getId() + "|| " + c.getNombre());
+
+        }
+    }
+
+    private void existePorId() {
+        boolean existe = repositorioCategoria.existsById(10);
+        System.out.println("La categoria " + existe);
+    }
+
+    private void encuentraTodo() {
+        List<Categoria> categorias = repositorioCategoria.findAll();
+        for (Categoria c : categorias) {
+            System.out.println(c.getId() + "|| " + c.getNombre() + "||");
+        }
+    }
+
+    private void encontrarPorId() {
+        List<Integer> ids = new LinkedList<Integer>();
         ids.add(2);
         ids.add(11);
         ids.add(7);
-        Iterable<Categoria> categorias=repositorioCategoria.findAllById(ids);
-        for (Categoria cat:categorias){
+        Iterable<Categoria> categorias = repositorioCategoria.findAllById(ids);
+        for (Categoria cat : categorias) {
             System.out.println(cat);
         }
     }
-    private void eliminarTodo(){
+
+    private void eliminarTodo() {
         repositorioCategoria.deleteAll();
     }
-    private void conteo(){
-        long count=repositorioCategoria.count();
+
+    private void conteo() {
+        long count = repositorioCategoria.count();
         System.out.println("Total categorias: " + count);
     }
-    private void buscarId(){
-        Optional<Categoria> optional=repositorioCategoria.findById(1);
-        if(optional.isPresent()){
+
+    private void buscarId() {
+        Optional<Categoria> optional = repositorioCategoria.findById(1);
+        if (optional.isPresent()) {
             System.out.println(optional.get());
-        }else{
+        } else {
             System.out.println("El objeto no ha encotrador");
-        } 
+        }
     }
-    private void eliminar(){
-        int idCategoria=1;
+
+    private void eliminar() {
+        int idCategoria = 1;
         repositorioCategoria.deleteById(idCategoria);
     }
-    private void modificar(){
-         Optional<Categoria> optional=repositorioCategoria.findById(1);
-        if(optional.isPresent()){
-            Categoria categoriaAuxiliar=optional.get();
+
+    private void modificar() {
+        Optional<Categoria> optional = repositorioCategoria.findById(1);
+        if (optional.isPresent()) {
+            Categoria categoriaAuxiliar = optional.get();
             categoriaAuxiliar.setNombre("Ingeniero de software");
             categoriaAuxiliar.setDescripcion("diseño arquitectura de programas, desarrollo de sistemas");
             repositorioCategoria.save(categoriaAuxiliar);
             System.out.println(optional.get());
-        }else{
+        } else {
             System.out.println("El objeto no ha encotrador");
         }
     }
@@ -98,7 +143,5 @@ public class JpaDemoApplication implements CommandLineRunner {
         System.out.println(categoria);
 
     }
-
-    
 
 }
