@@ -1,6 +1,10 @@
 package com.leccion_3;
 
+import com.leccion_3.model.Categoria;
 import com.leccion_3.repositorio.CategoriasRepositorio;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -8,7 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class JpaDemoApplication implements CommandLineRunner {
-    
+
     @Autowired
     private CategoriasRepositorio repositorioCategoria;
 
@@ -18,15 +22,83 @@ public class JpaDemoApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        existePorId();
         System.out.println(repositorioCategoria);
+    }
+    private void existePorId(){
+       boolean existe= repositorioCategoria.existsById(10);
+        System.out.println("La categoria "+ existe);
+    }
+    private void encuentraTodo(){
+         Iterable<Categoria>categorias=repositorioCategoria.findAll();
+         for(Categoria cat:categorias){
+             System.out.println(cat);
+         }
+    }
+    private void encontrarPorId(){
+        List <Integer> ids=new LinkedList<Integer>();
+        ids.add(2);
+        ids.add(11);
+        ids.add(7);
+        Iterable<Categoria> categorias=repositorioCategoria.findAllById(ids);
+        for (Categoria cat:categorias){
+            System.out.println(cat);
+        }
+    }
+    private void eliminarTodo(){
+        repositorioCategoria.deleteAll();
+    }
+    private void conteo(){
+        long count=repositorioCategoria.count();
+        System.out.println("Total categorias: " + count);
+    }
+    private void buscarId(){
+        Optional<Categoria> optional=repositorioCategoria.findById(1);
+        if(optional.isPresent()){
+            System.out.println(optional.get());
+        }else{
+            System.out.println("El objeto no ha encotrador");
+        } 
+    }
+    private void eliminar(){
+        int idCategoria=1;
+        repositorioCategoria.deleteById(idCategoria);
+    }
+    private void modificar(){
+         Optional<Categoria> optional=repositorioCategoria.findById(1);
+        if(optional.isPresent()){
+            Categoria categoriaAuxiliar=optional.get();
+            categoriaAuxiliar.setNombre("Ingeniero de software");
+            categoriaAuxiliar.setDescripcion("diseño arquitectura de programas, desarrollo de sistemas");
+            repositorioCategoria.save(categoriaAuxiliar);
+            System.out.println(optional.get());
+        }else{
+            System.out.println("El objeto no ha encotrador");
+        }
     }
 
     private void guardar() {
-        System.out.println("insertando el registro");
+        Categoria categoria = new Categoria();
+        categoria.setNombre("Finanzas");
+        categoria.setDescripcion("Es un hecho establecido hace demasiado tiempo que un lector"
+                + " se distraerá con el contenido del texto de un sitio mientras que mira su"
+                + " diseño. El punto de usar Lorem Ipsum es que tiene una distribución más o"
+                + " menos normal de las letras, al contrario de usar textos como por ejemplo "
+                + "\"Contenido aquí, contenido aquí\". Estos textos hacen parecerlo un "
+                + "español que se puede leer. Muchos paquetes de autoedición y editores de "
+                + "páginas web usan el Lorem Ipsum como su texto por defecto, y al hacer una "
+                + "búsqueda de \"Lorem Ipsum\" va a dar por resultado muchos sitios web que "
+                + "usan este texto si se encuentran en estado de desarrollo. Muchas versiones"
+                + " han evolucionado a través de los años, algunas veces por "
+                + "accidente, otras veces a propósito (por ejemplo insertándole humor y cosas "
+                + "por el estilo).");
+
+        //con esta linia de codigo se produce el insert a la tabla de categoria
+        repositorioCategoria.save(categoria);
+        System.out.println(categoria);
+
     }
 
-    private void eliminar() {
-        System.out.println("eliminando el registro");
-    }
+    
 
 }

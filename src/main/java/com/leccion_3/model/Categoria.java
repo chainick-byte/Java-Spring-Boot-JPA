@@ -19,14 +19,15 @@ import javax.persistence.Table;
 @Entity
 @Table(name="categorias")
 public class Categoria {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
-    private Long id;
+    private int id;
     private String nombre;
     private String descripcion;
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -38,7 +39,7 @@ public class Categoria {
         this.descripcion = descripcion;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
