@@ -6,16 +6,14 @@
 package com.leccion_3.repositorio;
 
 import com.leccion_3.model.Categoria;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author igorr
  */
-
+@Repository
 public interface CategoriasRepositorio extends JpaRepository<Categoria, Integer>{
  //   public interface CategoriasRepositorio extends CrudRepository<Categoria, Integer>{
 

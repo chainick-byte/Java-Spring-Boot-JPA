@@ -1,7 +1,9 @@
 package com.leccion_3;
 
 import com.leccion_3.model.Categoria;
+import com.leccion_3.model.Vacante;
 import com.leccion_3.repositorio.CategoriasRepositorio;
+import com.leccion_3.repositorio.VacantesRepositorio;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +20,9 @@ public class JpaDemoApplication implements CommandLineRunner {
 
     @Autowired
     private CategoriasRepositorio repositorioCategoria;
+    
+    @Autowired
+    private VacantesRepositorio repositorioVacantes;
 
     public static void main(String[] args) {
         SpringApplication.run(JpaDemoApplication.class, args);
@@ -25,8 +30,16 @@ public class JpaDemoApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        buscarTodoConPaginacionOrdenado();
+        buscarVacantes();
         System.out.println(repositorioCategoria);
+    }
+    
+    private void buscarVacantes(){
+        List<Vacante>listaVacantes=repositorioVacantes.findAll();
+        for(Vacante v:listaVacantes ){
+            System.out.println(v.getId() + "||" + v.getNombre()+ "||" + v.getCategoria().getNombre());
+        }
+        
     }
 //    private void guardarTodo(){
 //        
