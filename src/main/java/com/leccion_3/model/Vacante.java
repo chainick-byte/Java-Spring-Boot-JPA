@@ -14,16 +14,15 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 /**
  *
  * @author igorr
  */
 @Entity
-@Table(name="vacantes")
-public class Vacante {
-    
+@Table(name = "vacantes")
+public class Vacante  {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
@@ -35,14 +34,14 @@ public class Vacante {
     private int destacado;
     //al definir la variable imagen aqui , lo que sucedera es que al no tener imagenes se 
     //imprimira esa por defecto la que esta definida aqui
-    private String imagen="nologo.png";
+    private String imagen = "nologo.png";
     //Añado variables que me faltan los que estan en la vista para poder hacer data binding, genero setters y getters
     //restantes y reescribo el metodo toString
     private String estatus;
     private String detalles;
     //@Transient
     @OneToOne
-    @JoinColumn(name="idcategoria")
+    @JoinColumn(name = "idcategoria")
     private Categoria categoria;
 
     public void setCategoria(Categoria categoria) {
@@ -69,11 +68,9 @@ public class Vacante {
         return detalles;
     }
 
-    
     // al tener todos los metodos de getter y setter de todas las variables , la clase Vacante
     //se convierte en una clase de tipo BEAN 
     //se autogenerea con BD "insert code"
-    
     public String getImagen() {
         return imagen;
     }
@@ -82,7 +79,7 @@ public class Vacante {
         this.imagen = imagen;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -102,7 +99,7 @@ public class Vacante {
         this.salario = salario;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -135,11 +132,4 @@ public class Vacante {
         return "Vacante{" + "id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + ", fecha=" + fecha + ", salario=" + salario + ", destacado=" + destacado + ", imagen=" + imagen + ", estatus=" + estatus + ", detalles=" + detalles + ", categoria=" + categoria + '}';
     }
 
-   
-    
-
-  
-    
-    
-    
 }
