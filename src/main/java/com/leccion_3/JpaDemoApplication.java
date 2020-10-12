@@ -22,10 +22,9 @@ import org.springframework.data.domain.Sort;
 
 @SpringBootApplication
 public class JpaDemoApplication implements CommandLineRunner {
-    
-    
+
     @Autowired
-    private PerfilesRepositorio repositorioPerfil;  
+    private PerfilesRepositorio repositorioPerfil;
     @Autowired
     private UsuariosRepositorio repositorioUsuario;
     @Autowired
@@ -33,80 +32,115 @@ public class JpaDemoApplication implements CommandLineRunner {
     @Autowired
     private VacantesRepositorio repositorioVacantes;
 
-    
     public static void main(String[] args) {
         SpringApplication.run(JpaDemoApplication.class, args);
     }
 
     @Override
     public void run(String... args) throws Exception {
-        buscarUsuarios();
+        buscarVacantesVariosEstatus();
         System.out.println(repositorioCategoria);
     }
-    //buscar usuarios y desplegar sus perfiles!
-    
-    public void buscarUsuarios(){
-        Optional <Usuario> encontrado=repositorioUsuario.findById(2);
-        if(encontrado.isPresent()){
-            Usuario usuario= encontrado.get();
+
+    private void buscarVacantesVariosEstatus() {
+        String[] estatus = new String[]{"Eliminada", "Creada"};
+        List<Vacante> lista = repositorioVacantes.findByEstatusIn(estatus);
+        System.out.println("numero de vacantes aprobado y destacado total es: " + lista.size());
+        for (Vacante v : lista) {
+            System.out.println(v.getId() + "||" + v.getNombre() + "||" + v.getEstatus());
+
+        }
+    }
+
+    private void buscarPorSalario() {
+        List<Vacante> lista = repositorioVacantes.findBySalarioBetweenOrderBySalarioDesc(7000.0, 14000.0);
+        System.out.println("numero de vacantes aprobado y destacado total es: " + lista.size());
+        for (Vacante v : lista) {
+            System.out.println(v.getId() + "||" + v.getNombre() + "||" + v.getSalario() + "$");
+
+        }
+
+    }
+
+    private void buscarPorDestacadoEstatusOrdenado() {
+        List<Vacante> lista = repositorioVacantes.findByDestacadoAndEstatusOrderByIdDesc(1, "Aprobada");
+        System.out.println("numero de vacantes aprobado y destacado total es: " + lista.size());
+        for (Vacante v : lista) {
+            System.out.println(v.getId() + "||" + v.getNombre() + "||" + v.getEstatus() + "||" + v.getDestacado());
+
+        }
+    }
+
+    private void buscarVacantesPorstatus() {
+        List<Vacante> lista = repositorioVacantes.findByEstatus("Aprobada");
+        System.out.println("numero de vacantes aprobado total es: " + lista.size());
+        for (Vacante v : lista) {
+            System.out.println(v.getId() + "||" + v.getNombre() + "||");
+        }
+    }
+
+    private void buscarUsuarios() {
+        Optional<Usuario> encontrado = repositorioUsuario.findById(2);
+        if (encontrado.isPresent()) {
+            Usuario usuario = encontrado.get();
             System.out.println("Usuario:" + usuario.getNombre());
             System.out.println("Perfiles asignados:");
-                for(Perfil p: usuario.getPerfiles()){
-                    System.out.println("    " + p.getPerfil());
-                }
-            
-        }else{
-            System.out.println("No existe ele usuario");
+            for (Perfil p : usuario.getPerfiles()) {
+                System.out.println("    " + p.getPerfil());
+            }
+
+        } else {
+            System.out.println("No existe el usuario");
         }
-        
+
     }
-    
-    private void crearUsuarioConPerfil(){
-        Usuario user=new Usuario();
+
+    private void crearUsuarioConPerfil() {
+        Usuario user = new Usuario();
         user.setNombre("Igor");
         user.setEmail("igorrepyakh@gmail.com");
         user.setFechaRegistro(new Date());
         user.setUsername("Chiainick");
         user.setPassword("1234");
         user.setEstatus(1);
-        
-       Perfil perfilMio=new Perfil();
-       perfilMio.setId(2);
-       
-       Perfil perfilMio_1=new Perfil();
-       perfilMio_1.setId(3);
-        System.out.println(perfilMio+"||"+perfilMio_1+"||");
-       user.agregar(perfilMio);
-       user.agregar(perfilMio_1);
-       
-       repositorioUsuario.save(user);
+
+        Perfil perfilMio = new Perfil();
+        perfilMio.setId(2);
+
+        Perfil perfilMio_1 = new Perfil();
+        perfilMio_1.setId(3);
+        System.out.println(perfilMio + "||" + perfilMio_1 + "||");
+        user.agregar(perfilMio);
+        user.agregar(perfilMio_1);
+
+        repositorioUsuario.save(user);
     }
-    
+
     //creo un metodo para empezar llenar la tabla de perfiles donde perfiles es el rol de ususario
-    
-    private void crearPerfilesAplicacion(){
+    private void crearPerfilesAplicacion() {
         repositorioPerfil.saveAll(getPerfilAplicacion());
     }
-    private List<Perfil>getPerfilAplicacion(){
-        List<Perfil> listaPerfiles=new LinkedList<Perfil>();
-        Perfil perfil_1=new Perfil();
-        Perfil perfil_2=new Perfil();
-        Perfil perfil_3=new Perfil();
-        
+
+    private List<Perfil> getPerfilAplicacion() {
+        List<Perfil> listaPerfiles = new LinkedList<Perfil>();
+        Perfil perfil_1 = new Perfil();
+        Perfil perfil_2 = new Perfil();
+        Perfil perfil_3 = new Perfil();
+
         perfil_1.setPerfil("SUPERVISOR");
         perfil_2.setPerfil("AMINISTARTOR");
         perfil_3.setPerfil("USUARIO");
-        
+
         listaPerfiles.add(perfil_1);
         listaPerfiles.add(perfil_2);
         listaPerfiles.add(perfil_3);
-        
+
         return listaPerfiles;
     }
-    
-    private void guardarVacante(){
+
+    private void guardarVacante() {
         //creamos objeto de tipo vacante
-        Vacante miVacante=new Vacante();
+        Vacante miVacante = new Vacante();
         miVacante.setNombre("Profesor de matematica");
         miVacante.setDescripcion("Hago pensar a la gente y les hago ver operaciones logicas ancestrles");
         miVacante.setFecha(new Date());
@@ -115,20 +149,20 @@ public class JpaDemoApplication implements CommandLineRunner {
         miVacante.setDestacado(0);
         miVacante.setImagen("escuela.png");
         miVacante.setDetalles("<h1> Los requisitos para profesor de matemaitcas</h1>");
-        Categoria miCategoria=new Categoria();
+        Categoria miCategoria = new Categoria();
         miCategoria.setId(15);
         miVacante.setCategoria(miCategoria);
-        
+
         //guardamos este objeto 
         repositorioVacantes.save(miVacante);
     }
-    
-    private void buscarVacantes(){
-        List<Vacante>listaVacantes=repositorioVacantes.findAll();
-        for(Vacante v:listaVacantes ){
-            System.out.println(v.getId() + "||" + v.getNombre()+ "||" + v.getCategoria().getNombre());
+
+    private void buscarVacantes() {
+        List<Vacante> listaVacantes = repositorioVacantes.findAll();
+        for (Vacante v : listaVacantes) {
+            System.out.println(v.getId() + "||" + v.getNombre() + "||" + v.getCategoria().getNombre());
         }
-        
+
     }
 //    private void guardarTodo(){
 //        
